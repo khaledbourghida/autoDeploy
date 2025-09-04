@@ -1,5 +1,5 @@
 import flet as ft
-from data.profile_store import ProfileStore
+from storage.profile_store import ProfileStore
 
 
 class HomePage:

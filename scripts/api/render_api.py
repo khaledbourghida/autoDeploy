@@ -1,7 +1,7 @@
 import requests
 import json
 from typing import Dict, List, Optional
-from data.profile_store import ProfileStore
+from storage.profile_store import ProfileStore
 
 
 class RenderAPI:

@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict, List
-from data.profile_store import ProfileStore
+from storage.profile_store import ProfileStore
 
 
 class ProjectTracker:

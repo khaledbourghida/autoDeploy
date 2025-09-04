@@ -12,7 +12,7 @@ from pages.about_page import AboutPage
 from pages.no_profiles_page import NoProfilesPage
 from pages.platform_detail_page import PlatformDetailPage
 from pages.create_profile_page import CreateProfilePage
-from data.profile_store import ProfileStore
+from storage.profile_store import ProfileStore
 
 
 class AutoDeployApp:

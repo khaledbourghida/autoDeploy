@@ -4,7 +4,7 @@ from typing import List, Dict
 
 
 class ProfileStore:
-    ROOT = os.path.join("data", "profiles")
+    ROOT = os.path.join("storage", "profiles")
 
     @classmethod
     def _file_for(cls, platform_id: str) -> str:

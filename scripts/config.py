@@ -2,14 +2,12 @@
 Configuration file for autoDeploy application
 """
 
-import os
-from typing import Dict, Any
-
 # Application settings
 APP_CONFIG = {
     "name": "autoDeploy",
     "version": "1.0.0",
     "description": "Multi-platform deployment management",
+    "platforms" : ['github' , 'netlify' , 'render'],
     "window": {
         "width": 1400,
         "height": 900,
@@ -29,13 +27,6 @@ THEME_CONFIG = {
         "text_primary": "#f0f6fc",
         "text_secondary": "#8b949e"
     }
-}
-
-# API configuration
-API_CONFIG = {
-    "timeout": 30,
-    "retry_attempts": 3,
-    "rate_limit_delay": 1
 }
 
 # Platform endpoints

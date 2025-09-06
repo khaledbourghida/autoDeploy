@@ -1,6 +1,7 @@
 import flet as ft
 from datetime import datetime
 from storage.profile_store import ProfileStore
+from models.github import GithubProfile
 
 
 class CreateProfilePage:
@@ -10,51 +11,48 @@ class CreateProfilePage:
     def build(self):
         platform_label = self.app.get_platform_label(self.app.current_platform_id)
         
-        name_field = ft.TextField(
-            label="Profile Name",
-            hint_text="Enter a friendly name for this profile",
+        username_field = ft.TextField(
+            label="GitHub Username",
+            hint_text="Enter your GitHub username",
+            bgcolor="#161b22",
+            border_color="#21262d",
+            focused_border_color="#238636"
+        )
+        
+        email_field = ft.TextField(
+            label="GitHub Email",
+            hint_text="Enter your GitHub email address",
             bgcolor="#161b22",
             border_color="#21262d",
             focused_border_color="#238636"
         )
         
         token_field = ft.TextField(
-            label="Access Token / API Key",
-            hint_text="Enter your access token",
+            label="GitHub Personal Access Token",
+            hint_text="Enter your GitHub PAT (with repo permissions)",
             password=True,
             can_reveal_password=True,
             bgcolor="#161b22",
             border_color="#21262d",
             focused_border_color="#238636"
         )
-        
-        owner_field = ft.TextField(
-            label="Owner/Organization (optional)",
-            hint_text="Enter owner or organization name",
-            bgcolor="#161b22",
-            border_color="#21262d",
-            focused_border_color="#238636"
-        )
 
         def save_profile(e):
-            name = name_field.value.strip() if name_field.value else ""
+            username = username_field.value.strip() if username_field.value else ""
+            email = email_field.value.strip() if email_field.value else ""
             token = token_field.value.strip() if token_field.value else ""
-            owner = owner_field.value.strip() if owner_field.value else ""
             
-            if not name or not token:
-                self.app.show_dialog("Missing Fields", "Name and token are required.")
+            if not username or not email or not token:
+                self.app.show_dialog("Missing Fields", "Username, email, and token are required.")
                 return
             
-            profile = {
-                "name": name,
-                "token": token,
-                "owner": owner or None,
-                "created_at": datetime.utcnow().isoformat() + "Z",
-            }
-            
-            ProfileStore.save_profile(self.app.current_platform_id, profile)
-            self.app.show_dialog("Success", f"Profile '{name}' saved for {platform_label}.")
-            self.app.open_platform(self.app.current_platform_id)
+            try:
+                profile = GithubProfile.create_profile(username, email, token)
+                ProfileStore.save_profile(self.app.current_platform_id, profile.to_dict())
+                self.app.show_dialog("Success", f"GitHub profile for '{username}' saved successfully.")
+                self.app.open_platform(self.app.current_platform_id)
+            except Exception as ex:
+                self.app.show_dialog("Error", f"Failed to create profile: {str(ex)}")
 
         return ft.Column([
             ft.Row([
@@ -63,15 +61,24 @@ class CreateProfilePage:
                     on_click=lambda e: self.app.show_home(),
                     tooltip="Back to Home"
                 ),
-                ft.Text("Create Profile", size=28, weight=ft.FontWeight.BOLD, color="#f0f6fc"),
+                ft.Text("Create GitHub Profile", size=28, weight=ft.FontWeight.W_500, color="#f0f6fc"),
             ]),
             ft.Text(f"Platform: {platform_label}", size=16, color="#8b949e"),
             ft.Container(height=24),
             ft.Container(
                 content=ft.Column([
-                    name_field,
+                    ft.Text("GitHub Profile Information", size=18, weight=ft.FontWeight.W_500, color="#f0f6fc"),
+                    ft.Container(height=8),
+                    username_field,
+                    email_field,
                     token_field,
-                    owner_field,
+                    ft.Container(height=16),
+                    ft.Text(
+                        "Note: Your GitHub token should have 'repo' permissions for full functionality.",
+                        size=12,
+                        color="#8b949e",
+                        italic=True
+                    ),
                     ft.Container(height=24),
                     ft.Row([
                         ft.ElevatedButton(
@@ -90,6 +97,6 @@ class CreateProfilePage:
                 padding=24,
                 bgcolor="#161b22",
                 border_radius=12,
-                width=400,
+                width=500,
             )
         ])

@@ -15,7 +15,7 @@ class GithubProfile:
     total_deployments : Optional[int] = 0
     successful_deployments : Optional[int] = 0
     failed_deployments : Optional[int] = 0
-    api_usage_count : Optional[int] = 0
+    pending_deployments : Optional[int] = 0
 
     @classmethod
     def create_profile(cls , username : str , email : str , github_token : str) -> 'GithubProfile':
